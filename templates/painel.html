@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Painel de Ordens de Serviço{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Painel de Ordens de Serviço</h2>
+    <a href="{{ url_for('nova_os') }}" class="btn btn-primary btn-accessible fw-bold">+ Nova OS</a>
+</div>
+
+<!-- Indicadores de Visão Geral -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center p-3 shadow-sm border-0">
+            <h6 class="text-muted">Total de OS Ativas</h6>
+            <h2 class="fw-bold text-primary">{{ total_ativas }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center p-3 shadow-sm border-0">
+            <h6 class="text-muted">Em Andamento</h6>
+            <h2 class="fw-bold text-warning">{{ em_andamento }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center p-3 shadow-sm border-0">
+            <h6 class="text-muted">Concluídas</h6>
+            <h2 class="fw-bold text-success">{{ concluidas }}</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Ordens -->
+<div class="card shadow-sm border-0 p-3">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>N.º OS</th>
+                    <th>Cliente</th>
+                    <th>Prazo</th>
+                    <th>Prioridade</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for os_item in ordens %}
+                <tr>
+                    <td class="fw-bold">OS-{{ os_item.id_os }}</td>
+                    <td>{{ os_item.cliente.nome }}<br><small class="text-muted">{{ os_item.cliente.telefone }}</small></td>
+                    <td>{{ os_item.prazo_entrega.strftime('%d/%m/%Y') }}</td>
+                    <td>
+                        <span class="badge badge-prioridade-{{ os_item.prioridade.lower() }}">
+                            {{ os_item.prioridade }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">{{ os_item.status }}</span>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('atualizar_status', id_os=os_item.id_os) }}" method="POST" class="d-inline">
+                            <select name="status" onchange="this.form.submit()" class="form-select form-select-sm d-inline-block w-auto">
+                                <option value="Aberta" {% if os_item.status == 'Aberta' %}selected{% endif %}>Aberta</option>
+                                <option value="Em Andamento" {% if os_item.status == 'Em Andamento' %}selected{% endif %}>Em Andamento</option>
+                                <option value="Concluída" {% if os_item.status == 'Concluída' %}selected{% endif %}>Concluída</option>
+                                <option value="Cancelada" {% if os_item.status == 'Cancelada' %}selected{% endif %}>Cancelada</option>
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Nenhuma ordem de serviço cadastrada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}  
+            </tbody>
+        </table>
+    </div>
+</div>
+
