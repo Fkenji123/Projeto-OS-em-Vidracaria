@@ -35,7 +35,7 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus {
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-.badge-prioridade-urgente { background-color: #dc3545; color: white; }
-.badge-prioridade-alta { background-color: #fd7e14; color: white; }
-.badge-prioridade-media { background-color: #ffc107; color: #212529; }
-.badge-prioridade-baixa { background-color: #0d6efd; color: white; }
+.badge-prioridade-urgente { background-color: #dc3545 !important; color: white !important; }
+.badge-prioridade-alta { background-color: #fd7e14 !important; color: white !important; }
+.badge-prioridade-média { background-color: #463709 !important; color: white !important; }
+.badge-prioridade-baixa { background-color: #0d6efd !important; color: white !important; }
