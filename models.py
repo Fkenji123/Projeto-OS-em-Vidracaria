@@ -14,7 +14,6 @@ class Usuario(UserMixin, db.Model):
     ativo = db.Column(db.Boolean, default=True, nullable=False)
 
     def set_senha(self, senha):
-        # Hash seguro com PBKDF2-SHA256 (RNF01)
         self.senha_hash = generate_password_hash(senha)
 
     def verificar_senha(self, senha):
@@ -30,6 +29,9 @@ class Cliente(db.Model):
     telefone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(150), nullable=True)
     
+    # Endereço cadastral fixo do cliente (Obrigatório)
+    endereco = db.Column(db.Text, nullable=False)
+    
     # Relacionamento 1:N com Ordem de Serviço
     ordens = db.relationship('OrdemServico', backref='cliente', lazy=True)
 
@@ -38,9 +40,11 @@ class OrdemServico(db.Model):
     id_os = db.Column(db.Integer, primary_key=True)
     descricao = db.Column(db.Text, nullable=False)
     prazo_entrega = db.Column(db.Date, nullable=False)
-    prioridade = db.Column(db.String(20), nullable=False)  # Baixa, Média, Alta, Urgente
-    status = db.Column(db.String(20), default='Aberta', nullable=False)  # Aberta, Em Andamento, Concluída, Cancelada
+    prioridade = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='Aberta')
     
-    # Chaves estrangeiras
+    tipo_atendimento = db.Column(db.String(50), nullable=True)
+    endereco = db.Column(db.Text, nullable=True) # Endereço específico de entrega ou serviço (opcional/condicional)
+    
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id_cliente'), nullable=False)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id_usuario'), nullable=False)

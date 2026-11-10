@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Detalhes da OS #{{ ordem.id_os }}{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0 p-4 max-width-800 mx-auto">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h3 class="fw-bold m-0">Ordem de Serviço #{{ ordem.id_os }}</h3>
+        <a href="{{ url_for('painel') }}" class="btn btn-secondary btn-sm fw-bold">← Voltar ao Painel</a>
+    </div>
+
+    <!-- Informações do Cliente -->
+    <h5 class="text-secondary fw-bold mb-3">Informações do Cliente</h5>
+    <div class="row mb-4 bg-light p-3 rounded">
+        <div class="col-md-6 mb-2">
+            <strong>Nome:</strong> {{ ordem.cliente.nome }}
+        </div>
+        <div class="col-md-6 mb-2">
+            <strong>Telefone:</strong> {{ ordem.cliente.telefone }}
+        </div>
+        <div class="col-md-6 mb-2">
+            <strong>E-mail:</strong> {{ ordem.cliente.email if ordem.cliente.email else 'Não informado' }}
+        </div>
+        <div class="col-md-12">
+            <strong>Endereço Cadastral:</strong> {{ ordem.cliente.endereco }}
+        </div>
+    </div>
+
+    <!-- Detalhes do Serviço -->
+    <h5 class="text-secondary fw-bold mb-3">Detalhes do Serviço</h5>
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <strong>Status Atual:</strong> 
+            <span class="badge bg-secondary">{{ ordem.status }}</span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <strong>Prioridade:</strong> 
+            <span class="badge badge-prioridade-{{ ordem.prioridade.lower() }}">{{ ordem.prioridade }}</span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <strong>Prazo de Entrega:</strong> {{ ordem.prazo_entrega.strftime('%d/%m/%Y') }}
+        </div>
+        <div class="col-md-6 mb-3">
+            <strong>Tipo de Atendimento:</strong> {{ ordem.tipo_atendimento }}
+        </div>
+        {% if ordem.endereco %}
+        <div class="col-md-12 mb-3">
+            <strong>Endereço Específico (Entrega/Serviço):</strong> {{ ordem.endereco }}
+        </div>
+        {% endif %}
+        <div class="col-md-12">
+            <strong>Descrição do Serviço:</strong>
+            <p class="border p-3 rounded bg-white mt-1">{{ ordem.descricao }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

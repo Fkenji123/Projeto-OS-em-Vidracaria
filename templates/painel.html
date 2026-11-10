@@ -58,6 +58,11 @@
                         <span class="badge bg-secondary">{{ os_item.status }}</span>
                     </td>
                     <td>
+                        <!-- Botão Mais Detalhes -->
+                        <a href="{{ url_for('detalhes_os', id_os=os_item.id_os) }}" class="btn btn-sm btn-outline-primary btn-accessible me-1" title="Ver Detalhes completos">
+                            Detalhes
+                        </a>
+
                         <!-- Formulário de Alteração de Status -->
                         <form action="{{ url_for('atualizar_status', id_os=os_item.id_os) }}" method="POST" class="d-inline">
                             <select name="status" onchange="this.form.submit()" class="form-select form-select-sm d-inline-block w-auto">
@@ -86,4 +91,3 @@
     </div>
 </div>
 {% endblock %}
-

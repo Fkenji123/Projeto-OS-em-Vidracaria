@@ -75,11 +75,12 @@ def nova_os():
         nome_cliente = request.form.get('nome_cliente')
         telefone_cliente = request.form.get('telefone_cliente')
         email_cliente = request.form.get('email_cliente')
+        endereco_cliente = request.form.get('endereco_cliente') # Captura o endereço cadastral obrigatório
+        
         descricao = request.form.get('descricao')
         prazo_str = request.form.get('prazo_entrega')
         prioridade = request.form.get('prioridade')
         
-        # Novos campos de atendimento e endereço
         tipo_atendimento = request.form.get('tipo_atendimento')
         endereco = request.form.get('endereco')
 
@@ -92,10 +93,15 @@ def nova_os():
                 flash(erro, 'danger')
             return render_template('nova_os.html')
 
-        # Buscar ou criar cliente
+        # Buscar ou criar cliente (incluindo o endereço cadastral obrigatório)
         cliente = Cliente.query.filter_by(telefone=telefone_cliente).first()
         if not cliente:
-            cliente = Cliente(nome=nome_cliente, telefone=telefone_cliente, email=email_cliente)
+            cliente = Cliente(
+                nome=nome_cliente, 
+                telefone=telefone_cliente, 
+                email=email_cliente, 
+                endereco=endereco_cliente
+            )
             db.session.add(cliente)
             db.session.flush()
 
@@ -117,6 +123,15 @@ def nova_os():
         return redirect(url_for('painel'))
 
     return render_template('nova_os.html')
+
+@app.route('/ordem/<int:id_os>/detalhes')
+@login_required
+def detalhes_os(id_os):
+    ordem = db.session.get(OrdemServico, id_os)
+    if not ordem:
+        flash('Ordem de Serviço não encontrada.', 'danger')
+        return redirect(url_for('painel'))
+    return render_template('detalhes_os.html', ordem=ordem)
 
 @app.route('/ordem/<int:id_os>/status', methods=['POST'])
 @login_required
@@ -157,5 +172,4 @@ if __name__ == '__main__':
             db.session.add(gerente)
             db.session.commit()
     app.run(debug=True)
-
     
