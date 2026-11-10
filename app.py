@@ -54,6 +54,32 @@ def logout():
     flash('Sessão encerrada com sucesso.', 'info')
     return redirect(url_for('login'))
 
+@app.route('/cadastro', methods=['GET', 'POST'])
+def cadastro():
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        email = request.form.get('email')
+        senha = request.form.get('senha')
+        perfil = request.form.get('perfil', 'Atendente')
+
+        # Verifica se o e-mail já está cadastrado
+        usuario_existente = Usuario.query.filter_by(email=email).first()
+        if usuario_existente:
+            flash('Este e-mail já está cadastrado no sistema.', 'danger')
+            return redirect(url_for('cadastro'))
+
+        # Cria o novo usuário com senha criptografada
+        novo_usuario = Usuario(nome=nome, email=email, perfil=perfil, ativo=True)
+        novo_usuario.set_senha(senha)
+        
+        db.session.add(novo_usuario)
+        db.session.commit()
+
+        flash('Cadastro realizado com sucesso! Faça login para continuar.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('cadastro.html')
+
 @app.route('/painel')
 @login_required
 def painel():
@@ -75,7 +101,7 @@ def nova_os():
         nome_cliente = request.form.get('nome_cliente')
         telefone_cliente = request.form.get('telefone_cliente')
         email_cliente = request.form.get('email_cliente')
-        endereco_cliente = request.form.get('endereco_cliente') # Captura o endereço cadastral obrigatório
+        endereco_cliente = request.form.get('endereco_cliente')
         
         descricao = request.form.get('descricao')
         prazo_str = request.form.get('prazo_entrega')
@@ -93,7 +119,7 @@ def nova_os():
                 flash(erro, 'danger')
             return render_template('nova_os.html')
 
-        # Buscar ou criar cliente (incluindo o endereço cadastral obrigatório)
+        # Buscar ou criar cliente
         cliente = Cliente.query.filter_by(telefone=telefone_cliente).first()
         if not cliente:
             cliente = Cliente(
@@ -172,4 +198,3 @@ if __name__ == '__main__':
             db.session.add(gerente)
             db.session.commit()
     app.run(debug=True)
-    
