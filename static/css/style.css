@@ -39,3 +39,49 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus {
 .badge-prioridade-alta { background-color: #fd7e14 !important; color: white !important; }
 .badge-prioridade-média { background-color: #463709 !important; color: white !important; }
 .badge-prioridade-baixa { background-color: #0d6efd !important; color: white !important; }
+
+/* Modo de Alto Contraste */
+body.alto-contraste {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+body.alto-contraste .card, 
+body.alto-contraste .navbar, 
+body.alto-contraste .table,
+body.alto-contraste .modal-content,
+body.alto-contraste .dropdown-menu {
+    background-color: #121212 !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+}
+
+body.alto-contraste .form-control, 
+body.alto-contraste .form-select {
+    background-color: #222222 !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+}
+
+body.alto-contraste a {
+    color: #ffbf47 !important;
+}
+
+/* Classes de Tamanho de Fonte Dinâmico (Aplicado globalmente) */
+body.fonte-grande,
+body.fonte-grande p,
+body.fonte-grande span,
+body.fonte-grande a,
+body.fonte-grande label,
+body.fonte-grande th,
+body.fonte-grande td,
+body.fonte-grande input,
+body.fonte-grande select,
+body.fonte-grande textarea {
+    font-size: 1.2rem !important;
+}
+
+body.fonte-grande h1 { font-size: 2.8rem !important; }
+body.fonte-grande h2 { font-size: 2.3rem !important; }
+body.fonte-grande h3 { font-size: 2rem !important; }
+body.fonte-grande .btn { font-size: 1.15rem !important; padding: 0.5rem 1rem !important; }
