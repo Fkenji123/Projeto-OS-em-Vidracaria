@@ -78,6 +78,10 @@ def nova_os():
         descricao = request.form.get('descricao')
         prazo_str = request.form.get('prazo_entrega')
         prioridade = request.form.get('prioridade')
+        
+        # Novos campos de atendimento e endereço
+        tipo_atendimento = request.form.get('tipo_atendimento')
+        endereco = request.form.get('endereco')
 
         erros_c = validar_cliente(nome_cliente, telefone_cliente)
         erros_os = validar_os(descricao, prazo_str, prioridade)
@@ -101,6 +105,8 @@ def nova_os():
             prazo_entrega=prazo_dt,
             prioridade=prioridade,
             status='Aberta',
+            tipo_atendimento=tipo_atendimento,
+            endereco=endereco if tipo_atendimento in ['Entrega', 'Serviço'] else None,
             cliente_id=cliente.id_cliente,
             usuario_id=current_user.id_usuario
         )
@@ -124,11 +130,19 @@ def atualizar_status(id_os):
             flash(f'Status da OS #{ordem.id_os} atualizado para {novo_status}.', 'success')
     return redirect(url_for('painel'))
 
-@app.route('/ajuda', methods=['GET', 'POST'])
+@app.route('/deletar_os/<int:id_os>', methods=['POST'])
+@login_required
+def deletar_os(id_os):
+    os_item = OrdemServico.query.get_or_404(id_os)
+    db.session.delete(os_item)
+    db.session.commit()
+    flash('Ordem de serviço excluída com sucesso!', 'success')
+    return redirect(url_for('painel'))
 
+@app.route('/ajuda', methods=['GET', 'POST'])
+@login_required
 def ajuda():
     if request.method == 'POST':
-        # Lógica de recebimento do formulário de ajuda
         flash('Mensagem enviada com sucesso para a gestão!', 'success')
         return render_template('ajuda.html', enviado=True)
     return render_template('ajuda.html')

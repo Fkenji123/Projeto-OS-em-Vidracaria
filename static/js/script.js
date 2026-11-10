@@ -34,5 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    
+
     console.log('Sistema de Gestão de OS da Vidraçaria carregado e operacional.');
 });

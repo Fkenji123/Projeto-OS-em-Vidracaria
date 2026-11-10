@@ -58,6 +58,7 @@
                         <span class="badge bg-secondary">{{ os_item.status }}</span>
                     </td>
                     <td>
+                        <!-- Formulário de Alteração de Status -->
                         <form action="{{ url_for('atualizar_status', id_os=os_item.id_os) }}" method="POST" class="d-inline">
                             <select name="status" onchange="this.form.submit()" class="form-select form-select-sm d-inline-block w-auto">
                                 <option value="Aberta" {% if os_item.status == 'Aberta' %}selected{% endif %}>Aberta</option>
@@ -65,6 +66,13 @@
                                 <option value="Concluída" {% if os_item.status == 'Concluída' %}selected{% endif %}>Concluída</option>
                                 <option value="Cancelada" {% if os_item.status == 'Cancelada' %}selected{% endif %}>Cancelada</option>
                             </select>
+                        </form>
+
+                        <!-- Botão de Deletar OS com Confirmação -->
+                        <form action="{{ url_for('deletar_os', id_os=os_item.id_os) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza absoluta que deseja excluir permanentemente esta Ordem de Serviço?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger btn-accessible ms-1" title="Excluir OS">
+                                Excluir
+                            </button>
                         </form>
                     </td>
                 </tr>
@@ -77,9 +85,5 @@
         </table>
     </div>
 </div>
-{% endblock %}  
-            </tbody>
-        </table>
-    </div>
-</div>
+{% endblock %}
 
