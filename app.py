@@ -188,13 +188,14 @@ def ajuda():
         return render_template('ajuda.html', enviado=True)
     return render_template('ajuda.html')
 
+# Inicialização automática do banco no Render (e ambiente local)
+with app.app_context():
+    db.create_all()
+    if not Usuario.query.filter_by(email='gerente@vidracaria.com.br').first():
+        gerente = Usuario(nome='Fabio Kenji', email='gerente@vidracaria.com.br', perfil='Gerente', ativo=True)
+        gerente.set_senha('123456')
+        db.session.add(gerente)
+        db.session.commit()
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        # Criar usuário inicial para demonstração
-        if not Usuario.query.filter_by(email='gerente@vidracaria.com.br').first():
-            gerente = Usuario(nome='Fabio Kenji', email='gerente@vidracaria.com.br', perfil='Gerente', ativo=True)
-            gerente.set_senha('123456')
-            db.session.add(gerente)
-            db.session.commit()
     app.run(debug=True)
