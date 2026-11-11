@@ -38,7 +38,7 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         senha = request.form.get('senha')
-        usuario = Usuario.query.filter_by(email=email).first()
+        usuario = db.session.execute(db.select(Usuario).filter_by(email=email)).scalar_one_or_none()
         
         if usuario and usuario.verificar_senha(senha) and usuario.ativo:
             login_user(usuario)
@@ -63,7 +63,7 @@ def cadastro():
         perfil = request.form.get('perfil', 'Atendente')
 
         # Verifica se o e-mail já está cadastrado
-        usuario_existente = Usuario.query.filter_by(email=email).first()
+        usuario_existente = db.session.execute(db.select(Usuario).filter_by(email=email)).scalar_one_or_none()
         if usuario_existente:
             flash('Este e-mail já está cadastrado no sistema.', 'danger')
             return redirect(url_for('cadastro'))
@@ -83,7 +83,7 @@ def cadastro():
 @app.route('/painel')
 @login_required
 def painel():
-    ordens = OrdemServico.query.order_by(OrdemServico.id_os.desc()).all()
+    ordens = db.session.scalars(db.select(OrdemServico).order_by(OrdemServico.id_os.desc())).all()
     total_ativas = sum(1 for os_item in ordens if os_item.status in ['Aberta', 'Em Andamento'])
     em_andamento = sum(1 for os_item in ordens if os_item.status == 'Em Andamento')
     concluidas = sum(1 for os_item in ordens if os_item.status == 'Concluída')
@@ -120,7 +120,7 @@ def nova_os():
             return render_template('nova_os.html')
 
         # Buscar ou criar cliente
-        cliente = Cliente.query.filter_by(telefone=telefone_cliente).first()
+        cliente = db.session.execute(db.select(Cliente).filter_by(telefone=telefone_cliente)).scalar_one_or_none()
         if not cliente:
             cliente = Cliente(
                 nome=nome_cliente, 
@@ -174,7 +174,7 @@ def atualizar_status(id_os):
 @app.route('/deletar_os/<int:id_os>', methods=['POST'])
 @login_required
 def deletar_os(id_os):
-    os_item = OrdemServico.query.get_or_404(id_os)
+    os_item = db.get_or_404(OrdemServico, id_os)
     db.session.delete(os_item)
     db.session.commit()
     flash('Ordem de serviço excluída com sucesso!', 'success')
@@ -191,7 +191,8 @@ def ajuda():
 # Inicialização automática do banco no Render (e ambiente local)
 with app.app_context():
     db.create_all()
-    if not Usuario.query.filter_by(email='gerente@vidracaria.com.br').first():
+    gerente_existente = db.session.execute(db.select(Usuario).filter_by(email='gerente@vidracaria.com.br')).scalar_one_or_none()
+    if not gerente_existente:
         gerente = Usuario(nome='Fabio Kenji', email='gerente@vidracaria.com.br', perfil='Gerente', ativo=True)
         gerente.set_senha('123456')
         db.session.add(gerente)
